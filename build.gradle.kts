@@ -69,7 +69,7 @@ publishing {
     register<MavenPublication>("gpr") {
       groupId = "de.derioo.mods"
       artifactId = "timer"
-      version = "0.0.0"
+      version = "0.0.1"
       from(components["java"])
     }
   }
