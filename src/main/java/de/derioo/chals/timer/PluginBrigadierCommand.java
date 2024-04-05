@@ -1,4 +1,4 @@
-package io.papermc.paperweight.testplugin;
+package de.derioo.chals.timer;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;

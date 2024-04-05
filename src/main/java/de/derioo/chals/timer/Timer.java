@@ -1,18 +1,26 @@
-package io.papermc.paperweight.testplugin;
+package de.derioo.chals.timer;
 
 import com.destroystokyo.paper.brigadier.BukkitBrigadierCommandSource;
 import com.destroystokyo.paper.event.brigadier.CommandRegisteredEvent;
+import com.google.gson.JsonObject;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+
+import java.io.File;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+
+import de.derioo.chals.timer.config.Config;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,32 +35,63 @@ import static net.minecraft.commands.Commands.literal;
 import static net.minecraft.commands.arguments.EntityArgument.players;
 
 @DefaultQualifier(NonNull.class)
-public final class TestPlugin extends JavaPlugin implements Listener {
+public final class Timer extends JavaPlugin implements Listener {
+
+  private boolean running = false;
+  private long timer;
+
+  private Config config;
+
+
   @Override
   public void onEnable() {
     this.getServer().getPluginManager().registerEvents(this, this);
 
+    config = new Config(this);
+    timer = config.get().get("timer").getAsLong();
+
+    this.registerTimerCommand();
+    this.runTimerTask();
+  }
+
+  private void runTimerTask() {
+    Bukkit.getScheduler().runTaskTimer(this, () -> {
+      if (running) timer++;
+      Bukkit.getServer().sendActionBar(MiniMessage.miniMessage().deserialize("<color:#ffff00>" + (running || timer != 0 ?
+        TimerConverter.convert(timer, TimeUnit.SECONDS) :
+        "Idle")));
+    }, 0, 20);
+  }
+
+  private void registerTimerCommand() {
     this.registerPluginBrigadierCommand(
-      "paperweight",
-      literal -> literal.requires(stack -> stack.getBukkitSender().hasPermission("paperweight"))
-        .then(literal("hello")
+      "timer",
+      literal -> literal.requires(stack -> stack.getBukkitSender().hasPermission("sc.timer"))
+        .then(literal("reset")
           .executes(ctx -> {
-            ctx.getSource().getBukkitSender().sendMessage(text("Hello!", BLUE));
+            config.get().addProperty("timer", 0L);
+            running = false;
+            ctx.getSource().getBukkitSender().sendMessage(text("Timer wird geresetet"));
             return Command.SINGLE_SUCCESS;
           }))
-        .then(argument("players", players())
+        .then(literal("stop")
           .executes(ctx -> {
-            final Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "players");
-            for (final ServerPlayer player : players) {
-              player.sendSystemMessage(
-                Component.literal("Hello from Paperweight test plugin!")
-                  .withStyle(ChatFormatting.ITALIC, ChatFormatting.GREEN)
-                  .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/paperweight @a")))
-              );
-            }
-            return players.size();
+            running = false;
+            ctx.getSource().getBukkitSender().sendMessage(text("Timer wird gestoppt"));
+            return Command.SINGLE_SUCCESS;
           }))
+        .then(literal("start").executes((ctx -> {
+          running = true;
+          ctx.getSource().getBukkitSender().sendMessage(text("Timer wird gestarted"));
+          return Command.SINGLE_SUCCESS;
+        })))
     );
+  }
+
+  @Override
+  public void onDisable() {
+    config.get().addProperty("timer", timer);
+    config.save();
   }
 
   private PluginBrigadierCommand registerPluginBrigadierCommand(final String label, final Consumer<LiteralArgumentBuilder<CommandSourceStack>> command) {
