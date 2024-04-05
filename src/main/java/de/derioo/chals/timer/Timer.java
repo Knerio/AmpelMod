@@ -61,6 +61,9 @@ public final class Timer extends JavaPlugin implements Listener {
         TimerConverter.convert(timer, TimeUnit.SECONDS) :
         "Idle")));
     }, 0, 20);
+    Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+      config.save();
+    }, 20 * 20, 20 * 20);
   }
 
   private void registerTimerCommand() {
@@ -69,7 +72,7 @@ public final class Timer extends JavaPlugin implements Listener {
       literal -> literal.requires(stack -> stack.getBukkitSender().hasPermission("sc.timer"))
         .then(literal("reset")
           .executes(ctx -> {
-            config.get().addProperty("timer", 0L);
+            timer = 0L;
             running = false;
             ctx.getSource().getBukkitSender().sendMessage(text("Timer wird geresetet"));
             return Command.SINGLE_SUCCESS;

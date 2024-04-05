@@ -51,6 +51,10 @@ tasks {
     outputJar = layout.buildDirectory.file("libs/Timer.jar")
   }
 
+  publish {
+    mustRunAfter("reobfJar")
+  }
+
 }
 
 
@@ -69,16 +73,18 @@ publishing {
     register<MavenPublication>("gpr") {
       groupId = "de.derioo.mods"
       artifactId = "timer"
-      version = "0.0.1"
+      version = "0.1.0"
       from(components["java"])
+      artifact("build/libs/Timer.jar")
     }
   }
 }
+
 
 bukkitPluginYaml {
   main = "de.derioo.chals.timer.Timer"
   load = BukkitPluginYaml.PluginLoadOrder.STARTUP
   authors.add("Dario")
-  softDepend.add("simpleChalsServer")
+  depend.add("simpleChalsServer")
   apiVersion = "1.20"
 }
