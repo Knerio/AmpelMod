@@ -57,7 +57,7 @@ public final class Timer extends JavaPlugin implements Listener {
   private void runTimerTask() {
     Bukkit.getScheduler().runTaskTimer(this, () -> {
       if (running) timer++;
-      Bukkit.getServer().sendActionBar(MiniMessage.miniMessage().deserialize("<color:#ffff00>" + (timer != 0 ?
+      Bukkit.getServer().sendActionBar(MiniMessage.miniMessage().deserialize("<gradient:#d450b8:#737ddb>" + (timer != 0 ?
         TimerConverter.convert(timer, TimeUnit.SECONDS) :
         "Idle")));
     }, 0, 20);

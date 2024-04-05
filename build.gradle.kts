@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
   paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
-  compileOnly("de.derioo.chals:api:0.0.4")
+  compileOnly("de.derioo.chals:api:0.0.6")
   compileOnly("org.projectlombok:lombok:1.18.30")
   annotationProcessor("org.projectlombok:lombok:1.18.30")
 }
@@ -73,7 +73,7 @@ publishing {
     register<MavenPublication>("gpr") {
       groupId = "de.derioo.mods"
       artifactId = "timer"
-      version = "0.1.0"
+      version = "0.1.1"
       from(components["java"])
       artifact("build/libs/Timer.jar")
     }
