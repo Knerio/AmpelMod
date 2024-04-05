@@ -48,7 +48,7 @@ tasks {
 
 
   reobfJar {
-    outputJar = layout.buildDirectory.file("libs/Timer.jar")
+    outputJar = layout.buildDirectory.file("libs/Ampel.jar")
   }
 
   publish {
@@ -72,8 +72,8 @@ publishing {
   publications {
     register<MavenPublication>("gpr") {
       groupId = "de.derioo.mods"
-      artifactId = "timer"
-      version = "0.1.1"
+      artifactId = "ampel"
+      version = "0.0.0"
       from(components["java"])
       artifact("build/libs/Timer.jar")
     }
@@ -82,7 +82,7 @@ publishing {
 
 
 bukkitPluginYaml {
-  main = "de.derioo.chals.timer.Timer"
+  main = "de.derioo.chals.ampel.Ampel"
   load = BukkitPluginYaml.PluginLoadOrder.STARTUP
   authors.add("Dario")
   depend.add("simpleChalsServer")
