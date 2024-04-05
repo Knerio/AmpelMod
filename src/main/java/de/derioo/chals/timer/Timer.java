@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import de.derioo.chals.timer.config.Config;
+import de.derioo.chals.server.api.Config;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -47,7 +47,7 @@ public final class Timer extends JavaPlugin implements Listener {
   public void onEnable() {
     this.getServer().getPluginManager().registerEvents(this, this);
 
-    config = new Config(this);
+    config = new Config(this, "timer");
     timer = config.get().get("timer").getAsLong();
 
     this.registerTimerCommand();
@@ -57,7 +57,7 @@ public final class Timer extends JavaPlugin implements Listener {
   private void runTimerTask() {
     Bukkit.getScheduler().runTaskTimer(this, () -> {
       if (running) timer++;
-      Bukkit.getServer().sendActionBar(MiniMessage.miniMessage().deserialize("<color:#ffff00>" + (running || timer != 0 ?
+      Bukkit.getServer().sendActionBar(MiniMessage.miniMessage().deserialize("<color:#ffff00>" + (timer != 0 ?
         TimerConverter.convert(timer, TimeUnit.SECONDS) :
         "Idle")));
     }, 0, 20);
