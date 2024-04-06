@@ -17,7 +17,8 @@ public class MoveListener implements Listener {
   @EventHandler
   public void onPlayerMove(PlayerMoveEvent event) {
     if (ampel.getAmpel().getColor() == Ampel.AmpelObject.Color.RED) {
-      if (!event.hasChangedPosition()) return;
+      if (event.getFrom().getX() == event.getTo().getX()) return;
+      if (event.getFrom().getZ() == event.getTo().getZ()) return;
       if (!event.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) return;
       event.getPlayer().setHealth(0);
     }

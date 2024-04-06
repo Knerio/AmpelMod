@@ -45,13 +45,9 @@ public class Ampel extends JavaPlugin implements Listener {
 
       Bukkit.getScheduler().runTaskTimer(getPlugin(Ampel.class), () -> {
         bossBar.addViewer(Bukkit.getServer());
-        bossBar.color(switch (color) {
-          case RED -> BossBar.Color.RED;
-          case GREEN -> BossBar.Color.GREEN;
-          case YELLOW -> BossBar.Color.YELLOW;
-        });
-        bossBar.name(MiniMessage.miniMessage().deserialize("<"+color.name().toLowerCase()+">" + "◼".repeat(65)));
-        if (color == Color.YELLOW || color == Color.RED) return;
+        bossBar.color(BossBar.Color.YELLOW);
+        bossBar.name(MiniMessage.miniMessage().deserialize("<"+color.name().toLowerCase()+">" + "◼".repeat(200)));
+        if (color != Color.GREEN) return;
         if (lastSwitch + nextYellowSwitch < System.currentTimeMillis()) {
           color = Color.YELLOW;
           Bukkit.getServer().playSound(Sound.sound().type(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING).build());
