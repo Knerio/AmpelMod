@@ -73,7 +73,7 @@ publishing {
     register<MavenPublication>("gpr") {
       groupId = "de.derioo.mods"
       artifactId = "ampel"
-      version = "0.0.6"
+      version = "0.1.0"
       from(components["java"])
       artifact("build/libs/Ampel.jar")
     }
