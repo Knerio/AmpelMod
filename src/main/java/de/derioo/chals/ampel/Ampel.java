@@ -61,7 +61,7 @@ public class Ampel extends JavaPlugin implements Listener {
             Bukkit.getScheduler().runTaskLater(getPlugin(Ampel.class), () -> {
               Bukkit.getServer().playSound(Sound.sound().type(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING).build());
               color = Color.GREEN;
-              nextYellowSwitch = TimeUnit.MINUTES.toMillis(random.nextInt(3) + 1);
+              nextYellowSwitch = TimeUnit.MINUTES.toMillis(random.nextInt(3) + 5);
               lastSwitch = System.currentTimeMillis();
             }, random.nextInt(70) + 5 * 20);
           }, random.nextInt(20) + 30);

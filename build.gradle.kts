@@ -10,7 +10,7 @@ plugins {
 
 group = "de.derioo.chals.ampel"
 version = "0.0.0"
-description = "A Timer Mod"
+description = "Dies ist eine Ampel Mod, beim Aktivieren ist sie sofort aktiv!"
 
 java {
   toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -73,7 +73,7 @@ publishing {
     register<MavenPublication>("gpr") {
       groupId = "de.derioo.mods"
       artifactId = "ampel"
-      version = "0.2.0"
+      version = "0.2.2"
       from(components["java"])
       artifact("build/libs/Ampel.jar")
     }
