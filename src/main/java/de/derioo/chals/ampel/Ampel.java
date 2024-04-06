@@ -50,7 +50,7 @@ public class Ampel extends JavaPlugin implements Listener {
           case GREEN -> BossBar.Color.GREEN;
           case YELLOW -> BossBar.Color.YELLOW;
         });
-        bossBar.name(MiniMessage.miniMessage().deserialize("<"+color.name().toLowerCase()+">" + "◼".repeat(100)));
+        bossBar.name(MiniMessage.miniMessage().deserialize("<"+color.name().toLowerCase()+">" + "◼".repeat(65)));
         if (color == Color.YELLOW || color == Color.RED) return;
         if (lastSwitch + nextYellowSwitch < System.currentTimeMillis()) {
           color = Color.YELLOW;
