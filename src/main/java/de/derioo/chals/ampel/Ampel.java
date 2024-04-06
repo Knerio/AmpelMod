@@ -1,21 +1,15 @@
-package de.derioo.chals.timer;
+package de.derioo.chals.ampel;
 
-import de.derioo.chals.ampel.MoveListener;
 import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.minecraft.world.level.block.SoundType;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.framework.qual.DefaultQualifier;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
-import static net.kyori.adventure.text.Component.text;
 
 public class Ampel extends JavaPlugin implements Listener {
 
@@ -30,6 +24,11 @@ public class Ampel extends JavaPlugin implements Listener {
     ampel = new AmpelObject();
   }
 
+  @Override
+  public void onDisable() {
+    ampel.disable();
+  }
+
   public class AmpelObject {
     @Getter
     private Color color;
@@ -41,8 +40,8 @@ public class Ampel extends JavaPlugin implements Listener {
 
     public AmpelObject() {
       color = Color.GREEN;
-      nextYellowSwitch = TimeUnit.SECONDS.toMillis(random.nextInt(3) + 2);
-      bossBar = BossBar.bossBar(MiniMessage.miniMessage().deserialize("<green>" + "◼".repeat(20)), 1, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
+      nextYellowSwitch = TimeUnit.MINUTES.toMillis(random.nextInt(3) + 1);
+      bossBar = BossBar.bossBar(MiniMessage.miniMessage().deserialize(""), 1, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
 
       Bukkit.getScheduler().runTaskTimer(getPlugin(Ampel.class), () -> {
         bossBar.addViewer(Bukkit.getServer());
@@ -51,9 +50,9 @@ public class Ampel extends JavaPlugin implements Listener {
           case GREEN -> BossBar.Color.GREEN;
           case YELLOW -> BossBar.Color.YELLOW;
         });
-        bossBar.name(MiniMessage.miniMessage().deserialize("<"+color.name().toLowerCase()+">" + "◼".repeat(20)));
+        bossBar.name(MiniMessage.miniMessage().deserialize("<"+color.name().toLowerCase()+">" + "◼".repeat(100)));
         if (color == Color.YELLOW || color == Color.RED) return;
-        if (lastSwitch - nextYellowSwitch < System.currentTimeMillis()) {
+        if (lastSwitch + nextYellowSwitch < System.currentTimeMillis()) {
           color = Color.YELLOW;
           Bukkit.getServer().playSound(Sound.sound().type(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING).build());
           Bukkit.getScheduler().runTaskLater(getPlugin(Ampel.class), () -> {
@@ -62,13 +61,17 @@ public class Ampel extends JavaPlugin implements Listener {
             Bukkit.getScheduler().runTaskLater(getPlugin(Ampel.class), () -> {
               Bukkit.getServer().playSound(Sound.sound().type(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING).build());
               color = Color.GREEN;
-              nextYellowSwitch = TimeUnit.SECONDS.toMillis(random.nextInt(3) + 2);
+              nextYellowSwitch = TimeUnit.MINUTES.toMillis(random.nextInt(3) + 1);
               lastSwitch = System.currentTimeMillis();
             }, random.nextInt(70) + 5 * 20);
           }, random.nextInt(20) + 30);
         }
 
       }, 0, 5);
+    }
+
+    public void disable() {
+      bossBar.removeViewer(Bukkit.getServer());
     }
 
     public enum Color {

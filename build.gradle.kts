@@ -8,7 +8,7 @@ plugins {
   id("maven-publish")
 }
 
-group = "de.derioo.chals.timer"
+group = "de.derioo.chals.ampel"
 version = "0.0.0"
 description = "A Timer Mod"
 
@@ -73,9 +73,9 @@ publishing {
     register<MavenPublication>("gpr") {
       groupId = "de.derioo.mods"
       artifactId = "ampel"
-      version = "0.0.0"
+      version = "0.0.5"
       from(components["java"])
-      artifact("build/libs/Timer.jar")
+      artifact("build/libs/Ampel.jar")
     }
   }
 }
