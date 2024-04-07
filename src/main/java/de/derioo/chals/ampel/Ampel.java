@@ -45,22 +45,20 @@ public class Ampel extends JavaPlugin implements Listener {
 
       Bukkit.getScheduler().runTaskTimer(getPlugin(Ampel.class), () -> {
         bossBar.addViewer(Bukkit.getServer());
-        bossBar.color(switch (color) {
-          case RED -> BossBar.Color.RED;
-          case GREEN -> BossBar.Color.GREEN;
-          case YELLOW -> BossBar.Color.YELLOW;
-        });
-        bossBar.name(MiniMessage.miniMessage().deserialize("<"+color.name().toLowerCase()+">" + "◼".repeat(30)));
+        updateBossbar();
         if (color != Color.GREEN) return;
         if (lastSwitch + nextYellowSwitch < System.currentTimeMillis()) {
           color = Color.YELLOW;
+          updateBossbar();
           Bukkit.getServer().playSound(Sound.sound().type(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING).build());
           Bukkit.getScheduler().runTaskLater(getPlugin(Ampel.class), () -> {
             Bukkit.getServer().playSound(Sound.sound().type(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING).build());
             color = Color.RED;
+            updateBossbar();
             Bukkit.getScheduler().runTaskLater(getPlugin(Ampel.class), () -> {
               Bukkit.getServer().playSound(Sound.sound().type(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING).build());
               color = Color.GREEN;
+              updateBossbar();
               nextYellowSwitch = TimeUnit.MINUTES.toMillis(random.nextInt(3) + 5);
               lastSwitch = System.currentTimeMillis();
             }, random.nextInt(70) + 5 * 20);
@@ -68,6 +66,15 @@ public class Ampel extends JavaPlugin implements Listener {
         }
 
       }, 0, 5);
+    }
+
+    private void updateBossbar() {
+      bossBar.color(switch (color) {
+        case RED -> BossBar.Color.RED;
+        case GREEN -> BossBar.Color.GREEN;
+        case YELLOW -> BossBar.Color.YELLOW;
+      });
+      bossBar.name(MiniMessage.miniMessage().deserialize("<"+color.name().toLowerCase()+">" + "◼".repeat(30)));
     }
 
     public void disable() {
